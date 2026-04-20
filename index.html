@@ -513,13 +513,54 @@ select option{background:#081428}
   </div>
   <div class="footer-text">
   <span class="footer-gold">Students Union</span> · Faculty of Agriculture · Alexandria University<br>
-  <span class="ar" style="display:block;margin-top:4px">اتحاد طلاب كلية الزراعة — جامعة الإسكندرية</span><br>
+  <span class="ar" style="display:block;margin-top:4px">
+    اتحاد طلاب كلية الزراعة — جامعة الإسكندرية
+  </span><br>
+
   Developed by Aysel Elmasry · Graduation Class of 2025
 
-  <p style="margin-top:10px; font-style:italic; line-height:1.6;">
-    The beautiful moments end here, but your journey is just beginning—may your life be long, kind, and full of everything your heart dreams of.
-  </p>
+  <div class="quote">
+    The beautiful moments end here, but your journey is just beginning—<br>
+    may your life be long, kind, and full of everything your heart dreams of.
+  </div>
 </div>
+
+<style>
+.footer-text {
+  text-align: center;
+  color: #eaeaea;
+  font-family: "Playfair Display", serif;
+  line-height: 1.8;
+}
+
+.footer-gold {
+  color: #d4af37;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+.quote {
+  margin-top: 14px;
+  padding-top: 12px;
+  font-style: italic;
+  font-size: 0.95rem;
+  color: #f5f5f5;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
+}
+
+.quote::before,
+.quote::after {
+  content: "";
+  display: block;
+  width: 60px;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #d4af37, transparent);
+  margin: 10px auto;
+}
+</style>
 </footer>
 </div>
 
