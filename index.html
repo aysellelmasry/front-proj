@@ -24,7 +24,7 @@
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{font-size:16px;scroll-behavior:smooth}
-body{font-family:'DM Sans',sans-serif;background:var(--navy);color:var(--cream);min-height:100vh;overflow-x:hidden}
+body{font-family:'DM Sans',sans-serif;background:var(--navy);color:var(--cream);min-height:100vh;overflow-x:hidden;width:100%;display:flex;flex-direction:column;align-items:stretch}
 img{display:block;max-width:100%}
 button{font-family:inherit;cursor:pointer}
 a{color:inherit;text-decoration:none}
@@ -47,25 +47,52 @@ a{color:inherit;text-decoration:none}
 .api-banner.err{background:rgba(220,50,50,0.18);border-bottom:1px solid rgba(220,50,50,0.35);color:#fca5a5}
 .api-banner.ok{background:rgba(34,197,94,0.1);border-bottom:1px solid rgba(34,197,94,0.2);color:#86efac}
 
-/* HEADER */
-.header{position:sticky;top:0;z-index:200;background:rgba(4,12,26,0.93);border-bottom:1px solid rgba(212,167,44,0.18);backdrop-filter:blur(24px)}
-.header-inner{max-width:1280px;margin:0 auto;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:0 28px;height:78px}
-.h-left{display:flex;align-items:center;gap:12px;justify-content:flex-start}
-.h-right{display:flex;align-items:center;gap:12px;justify-content:flex-end}
+/* ═══════════════════════════════════════════════
+   HEADER — desktop
+   ═══════════════════════════════════════════════ */
+.header{
+  position:sticky;top:0;z-index:200;
+  background:rgba(4,12,26,0.93);
+  border-bottom:1px solid rgba(212,167,44,0.18);
+  backdrop-filter:blur(24px);
+}
+.header-inner{
+  max-width:1280px;margin:0 auto;
+  display:grid;
+  grid-template-columns:1fr auto 1fr;
+  align-items:center;
+  padding:0 28px;
+  height:120px;   /* slightly taller so bigger logos fit */
+}
+.h-left{display:flex;align-items:center;gap:14px;justify-content:flex-start}
+.h-right{display:flex;align-items:center;gap:14px;justify-content:flex-end}
 .h-center{display:flex;flex-direction:column;align-items:center;gap:0;padding:0 24px}
-.h-logo{height:54px;width:54px;object-fit:contain;flex-shrink:0;filter:drop-shadow(0 0 10px rgba(212,167,44,0.45));transition:filter var(--tr)}
+
+/* ── logos: bigger on desktop ── */
+.h-logo{
+  height:92px;width:92px;
+  object-fit:contain;flex-shrink:0;
+  filter:drop-shadow(0 0 10px rgba(212,167,44,0.45));
+  transition:filter var(--tr);
+}
 .h-logo:hover{filter:drop-shadow(0 0 20px rgba(212,167,44,0.8))}
-.h-logo-fb{width:54px;height:54px;border-radius:50%;flex-shrink:0;background:var(--gold-dim);border:1px solid rgba(212,167,44,0.3);display:grid;place-items:center;font-size:24px}
-.h-name{display:flex;flex-direction:column;gap:4px}
-.h-en{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--sky);font-weight:600;white-space:nowrap}
-.h-ar{font-family:'Noto Naskh Arabic',serif;font-size:11px;color:var(--gold-l);font-weight:500;direction:rtl;white-space:nowrap}
+.h-logo-fb{
+  width:92px;height:92px;border-radius:50%;flex-shrink:0;
+  background:var(--gold-dim);border:1px solid rgba(212,167,44,0.3);
+  display:grid;place-items:center;font-size:28px;
+}
+
+.h-name{display:flex;flex-direction:column;gap:5px}
+.h-en{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--sky);font-weight:600;white-space:nowrap}
+.h-ar{font-family:'Noto Naskh Arabic',serif;font-size:12px;color:var(--gold-l);font-weight:500;direction:rtl;white-space:nowrap}
 .h-right .h-name{align-items:flex-end}
-.hc-title{font-family:'Playfair Display',serif;font-size:20px;letter-spacing:.05em;color:var(--gold-l);font-weight:700;white-space:nowrap}
-.hc-line{width:50px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:4px 0}
-.hc-ar{font-family:'Noto Naskh Arabic',serif;font-size:12px;color:var(--cream-dim);direction:rtl}
+
+.hc-title{font-family:'Playfair Display',serif;font-size:22px;letter-spacing:.05em;color:var(--gold-l);font-weight:700;white-space:nowrap}
+.hc-line{width:50px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:5px 0}
+.hc-ar{font-family:'Noto Naskh Arabic',serif;font-size:13px;color:var(--cream-dim);direction:rtl}
 
 /* HERO */
-.hero{min-height:92vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:80px 24px 60px;position:relative}
+.hero{min-height:92vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:80px 24px 80px;width:100%;box-sizing:border-box}
 .hero-vline{width:1px;height:68px;background:linear-gradient(to bottom,transparent,rgba(212,167,44,0.55));margin:0 auto 28px}
 .hero-tag{display:inline-flex;align-items:center;gap:10px;border:1px solid rgba(212,167,44,0.32);border-radius:100px;padding:8px 24px;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);background:rgba(212,167,44,0.07);margin-bottom:38px;animation:fadeUp .8s ease both}
 .tag-dot{width:7px;height:7px;border-radius:50%;background:var(--gold-b);box-shadow:0 0 8px var(--gold-b);animation:dotPulse 2.4s ease-in-out infinite}
@@ -75,8 +102,8 @@ a{color:inherit;text-decoration:none}
 .h1-g{display:block;background:linear-gradient(120deg,#b07c10 0%,var(--gold-b) 28%,var(--gold-l) 52%,var(--gold-b) 72%,#b07c10 100%);background-size:220% 100%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:shimmer 5s linear infinite}
 @keyframes shimmer{0%{background-position:0%}100%{background-position:220%}}
 .hero-desc{font-size:clamp(15px,1.8vw,18px);line-height:1.85;color:var(--cream-dim);max-width:520px;margin:0 auto 14px;font-weight:300;animation:fadeUp .85s .16s ease both}
-.hero-ar{font-size:16px;color:rgba(212,167,44,0.6);animation:fadeUp .85s .22s ease both}
-.scroll-ind{position:absolute;bottom:34px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:10px;animation:fadeUp .85s .4s ease both}
+.hero-ar{font-size:16px;color:rgba(212,167,44,0.6);animation:fadeUp .85s .22s ease both;direction:ltr;text-align:center;width:100%}
+.scroll-ind{display:flex;flex-direction:column;align-items:center;gap:10px;margin-top:40px;animation:fadeUp .85s .4s ease both}
 .s-label{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:rgba(212,167,44,0.38)}
 .s-track{width:1px;height:52px;background:rgba(212,167,44,0.25);position:relative;overflow:hidden}
 .s-pill{position:absolute;top:0;left:-1px;width:3px;height:14px;border-radius:2px;background:linear-gradient(to bottom,var(--gold-b),transparent);animation:scrollDown 2s ease-in-out infinite}
@@ -84,13 +111,13 @@ a{color:inherit;text-decoration:none}
 @keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
 
 /* LAYOUT */
-.wrap{max-width:960px;margin:0 auto;padding:0 24px 80px}
-.wrap-wide{max-width:1280px;margin:0 auto;padding:0 24px 80px}
-.sec-label{display:flex;align-items:center;gap:16px;margin-bottom:32px}
+.wrap{max-width:960px;width:100%;margin:0 auto;padding:0 24px 80px;box-sizing:border-box}
+.wrap-wide{max-width:1280px;width:100%;margin:0 auto;padding:0 24px 80px;box-sizing:border-box}
+.sec-label{display:flex;align-items:center;gap:16px;margin-bottom:32px;width:100%}
 .sec-rule{flex:1;height:1px;background:linear-gradient(90deg,rgba(212,167,44,0.22),transparent)}
 .sec-rule.r{background:linear-gradient(90deg,transparent,rgba(212,167,44,0.22))}
 .sec-num{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:rgba(212,167,44,0.45);font-weight:600}
-.gem-div{display:flex;align-items:center;gap:18px;max-width:960px;margin:0 auto;padding:0 24px}
+.gem-div{display:flex;align-items:center;gap:18px;width:100%;max-width:960px;margin:0 auto;padding:0 24px;box-sizing:border-box}
 .gem-rule{flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(212,167,44,0.15),transparent)}
 .gem{width:8px;height:8px;border-radius:2px;background:var(--gold);transform:rotate(45deg);box-shadow:0 0 12px rgba(212,167,44,0.6)}
 
@@ -223,29 +250,136 @@ select option{background:#081428}
 .footer-text{font-size:12px;color:rgba(247,240,223,0.28);line-height:2;font-weight:300}
 .footer-gold{color:var(--gold)}
 
+/* ═══════════════════════════════════════════════
+   MOBILE  ≤ 768 px — everything centered
+   ═══════════════════════════════════════════════ */
 @media(max-width:768px){
-  .header-inner{padding:0 14px;height:62px}
-  .h-center{display:none}
-  .h-logo,.h-logo-fb{width:40px;height:40px;font-size:20px}
-  .hero{min-height:85vh;padding:60px 16px 48px}
-  .card-body,.photo-grid,.filter-bar,.res-head,.card-head{padding:18px}
-  .res-title{font-size:24px}
+
+  /* ── Global page centering ── */
+  .page{
+    width:100%;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+  }
+
+  /* ── Header: stacked, fully centered ── */
+  .header{width:100%;}
+  .header-inner{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    height:auto;
+    padding:12px 16px 14px;
+    gap:8px;
+    width:100%;
+  }
+
+  /* Title block appears first */
+  .h-center{
+    display:flex;
+    order:-1;
+    width:100%;
+    align-items:center;
+    justify-content:center;
+    padding-bottom:10px;
+    border-bottom:1px solid rgba(212,167,44,0.15);
+  }
+  .hc-title{font-size:17px;}
+  .hc-ar{font-size:12px;}
+
+  /* Faculty + Union side blocks become centered rows */
+  .h-left{
+    display:flex;
+    flex-direction:row;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    width:100%;
+  }
+  .h-right{
+    display:flex;
+    flex-direction:row-reverse;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    width:100%;
+  }
+  .h-name{align-items:center !important;text-align:center;}
+  .h-right .h-name{align-items:center !important;text-align:center;}
+  .h-en{font-size:9px;letter-spacing:.12em;white-space:normal;text-align:center;}
+  .h-ar{font-size:10px;text-align:center;}
+
+  /* Logos — bigger than before */
+  .h-logo,.h-logo-fb{width:62px;height:62px;font-size:22px;}
+
+  /* ── Hero section ── */
+  .hero{
+    min-height:auto;
+    padding:50px 20px 60px;
+    width:100%;
+    align-items:center;
+    text-align:center;
+  }
+  .hero-vline{margin:0 auto 20px;}
+  .hero-tag{font-size:10px;padding:6px 18px;}
+  .hero-h1{font-size:clamp(36px,9vw,60px);margin-bottom:16px;}
+  .hero-desc{font-size:15px;max-width:100%;padding:0;}
+  .hero-ar{
+    font-size:15px;
+    text-align:center !important;
+    direction:ltr !important;
+    width:100%;
+    display:block;
+  }
+  .scroll-ind{
+    position:static;
+    transform:none;
+    margin-top:36px;
+    align-items:center;
+    width:100%;
+  }
+
+  /* ── Gem divider ── */
+  .gem-div{
+    width:100%;
+    padding:0 20px;
+    box-sizing:border-box;
+    justify-content:center;
+  }
+
+  /* ── Section label (STEP 01 etc) ── */
+  .sec-label{
+    width:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+  }
+  .sec-num{text-align:center;white-space:nowrap;font-size:9px;}
+
+  /* ── Cards & content ── */
+  .wrap,.wrap-wide{
+    width:100%;
+    padding:0 12px 60px;
+    box-sizing:border-box;
+  }
+  .card-body,.photo-grid,.filter-bar,.res-head,.card-head{padding:16px;}
+  .card-head{flex-wrap:wrap;gap:12px;}
+  .res-title{font-size:22px;}
+  .res-actions{justify-content:center;}
+  .filter-bar{grid-template-columns:1fr;}
+  .prev-grid{grid-template-columns:repeat(auto-fill,minmax(75px,1fr));}
 }
 </style>
 </head>
 <body>
 
-<!-- ══════════════════════════════════════════════════════════════════════
-     API CONFIG
-     After deploying your backend on Render, paste the URL below.
-     Example: 'https://graduation-face-api.onrender.com'
-     ══════════════════════════════════════════════════════════════════════ -->
 <script>
   const _apiFromQuery = new URLSearchParams(window.location.search).get('api');
-
-  // ← PASTE YOUR RENDER BACKEND URL HERE (no trailing slash)
   const _apiHardcoded = 'https://backk-production-c0d5.up.railway.app';
-
   window.API_BASE = _apiFromQuery || _apiHardcoded;
   console.log('[Config] API_BASE =', window.API_BASE);
 </script>
@@ -258,14 +392,12 @@ select option{background:#081428}
 
 <div class="page">
 
-<!-- API Status Banner -->
 <div class="api-banner" id="apiBanner"></div>
 
 <!-- HEADER -->
 <header class="header">
   <div class="header-inner">
     <div class="h-left">
-      <!-- college.png served from same folder as index.html -->
       <img src="college.png" alt="كلية الزراعة" class="h-logo"
            onerror="this.outerHTML='<div class=h-logo-fb>🌾</div>'">
       <div class="h-name">
@@ -283,7 +415,6 @@ select option{background:#081428}
         <span class="h-en">Students Union</span>
         <span class="h-ar">اتحاد الطلاب</span>
       </div>
-      <!-- union.png served from same folder as index.html -->
       <img src="union.png" alt="اتحاد الطلاب" class="h-logo"
            onerror="this.outerHTML='<div class=h-logo-fb>🎓</div>'">
     </div>
@@ -536,13 +667,11 @@ async function doSearch() {
 
   try {
     const ctrl = new AbortController();
-    // 120 s timeout — face_recognition + large DB can be slow on cold start
     const tid = setTimeout(() => ctrl.abort(), 120000);
     const res = await fetch(`${window.API_BASE}/search-face`, {
       method: 'POST',
       body: form,
       signal: ctrl.signal,
-      // Do NOT set Content-Type header manually — browser sets it with boundary for multipart
     });
     clearTimeout(tid);
 
@@ -629,7 +758,6 @@ function dlItems(items) {
   if (!items.length) { toast('No photos to download.', 'error'); return; }
   toast(`Opening ${items.length} download${items.length > 1 ? 's' : ''}… (allow pop-ups if prompted)`, 'info');
   items.forEach((item, i) => setTimeout(() => {
-    // Open in new tab — direct GDrive downloads are more reliable than hidden <a> clicks
     window.open(item.url, '_blank', 'noopener');
   }, i * 400));
 }
