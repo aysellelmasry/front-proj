@@ -525,10 +525,28 @@ select option{background:#081428}
   <button class="lb-nav lb-prev" id="lbPrev">‹</button>
   <button class="lb-nav lb-next" id="lbNext">›</button>
   <div class="lb-wrap">
-    <img class="lb-img" id="lbImg" src="" alt="">
+
+    <!-- Loading spinner -->
+    <div id="lbLoading" style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:300px;gap:16px;">
+      <div style="width:44px;height:44px;border-radius:50%;border:3px solid rgba(212,167,44,0.2);border-top-color:var(--gold-b);animation:spin .8s linear infinite;"></div>
+      <div style="font-size:13px;color:var(--gold-l);letter-spacing:.08em;">Loading photo…</div>
+    </div>
+
+    <!-- Photo -->
+    <img class="lb-img" id="lbImg" src="" alt="" style="display:none;">
+
+    <!-- Fallback when image can't load -->
+    <div id="lbFallback" style="display:none;flex-direction:column;align-items:center;justify-content:center;min-height:300px;gap:20px;text-align:center;padding:40px;">
+      <div style="font-size:48px;opacity:.3;">🖼️</div>
+      <div style="font-size:15px;color:var(--cream-dim);line-height:1.7;">Photo preview unavailable.<br>Click <strong style="color:var(--gold-l);">Open in Drive</strong> below to view the full photo.</div>
+    </div>
+
     <div class="lb-info">
       <div><div class="lb-fn" id="lbFilename"></div><div class="lb-meta" id="lbMeta"></div></div>
-      <a class="btn btn-gold" id="lbDownload" href="#" target="_blank" rel="noopener">⬇ Download</a>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;">
+        <a class="btn btn-outline" id="lbOpenDrive" href="#" target="_blank" rel="noopener" style="font-size:11px;">↗ Open in Drive</a>
+        <a class="btn btn-gold" id="lbDownload" href="#" target="_blank" rel="noopener">⬇ Download</a>
+      </div>
     </div>
     <div class="lb-hint">← Previous &nbsp;·&nbsp; Next → &nbsp;·&nbsp; ESC to close</div>
   </div>
@@ -708,7 +726,7 @@ function renderResults() {
     inner.className = `grid-${gridSize}`;
     inner.innerHTML = filtered.map((r, i) => `
       <div class="photo-card ${selected.has(r.photo_id) ? 'selected' : ''}" onclick="toggleSel('${r.photo_id}')">
-        <img src="${r.thumbnail || r.url}" alt="Match ${i+1}" class="photo-img" loading="lazy" onerror="this.style.opacity='.3'">
+        <img src="${(()=>{ const m=(r.thumbnail||r.url||'').match(/[?&]id=([^&]+)/); return m?`https://drive.google.com/thumbnail?id=${m[1]}&sz=w500`:(r.thumbnail||r.url); })()}" alt="Match ${i+1}" class="photo-img" loading="lazy" onerror="this.style.opacity='.15';this.style.filter='grayscale(1)'">
         <div class="photo-ov"><button class="view-full" onclick="event.stopPropagation();openLB(${i})">View Full Size</button></div>
         <div class="check-box">${selected.has(r.photo_id) ? '<span style="color:#060300;font-size:13px;font-weight:bold">✓</span>' : ''}</div>
         <div class="conf-badge ${cc(r.confidence)}">${Math.round(r.confidence * 100)}%</div>
@@ -735,7 +753,11 @@ function dlItems(items) {
   if (!items.length) { toast('No photos to download.', 'error'); return; }
   toast(`Opening ${items.length} download${items.length > 1 ? 's' : ''}… (allow pop-ups if prompted)`, 'info');
   items.forEach((item, i) => setTimeout(() => {
-    window.open(item.url, '_blank', 'noopener');
+    const m = (item.thumbnail || item.url || '').match(/[?&]id=([^&]+)/);
+    const dlUrl = m
+      ? `https://drive.google.com/uc?export=download&id=${m[1]}`
+      : item.url;
+    window.open(dlUrl, '_blank', 'noopener');
   }, i * 400));
 }
 
@@ -753,16 +775,77 @@ document.querySelectorAll('.view-btn').forEach(btn => {
 });
 
 /* ══ LIGHTBOX ═══════════════════════════════════════════════ */
-function openLB(idx) { lbIndex = idx; updateLB(); document.getElementById('lightbox').style.display = 'flex'; document.body.style.overflow = 'hidden'; }
-function closeLB() { document.getElementById('lightbox').style.display = 'none'; document.body.style.overflow = ''; }
+function openLB(idx) {
+  lbIndex = idx;
+  updateLB();
+  document.getElementById('lightbox').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+function closeLB() {
+  document.getElementById('lightbox').style.display = 'none';
+  document.body.style.overflow = '';
+  // clear src to stop any pending load
+  document.getElementById('lbImg').src = '';
+}
+
+function getFileId(url) {
+  // extract GDrive file ID from any GDrive URL format
+  const m = url.match(/[?&]id=([^&]+)/) || url.match(/\/d\/([^/]+)/);
+  return m ? m[1] : null;
+}
+
 function updateLB() {
-  const r = filtered[lbIndex]; if (!r) return;
-  document.getElementById('lbImg').src = r.url;
-  document.getElementById('lbFilename').textContent = r.filename || `Photo ${lbIndex+1}`;
-  document.getElementById('lbMeta').textContent = `Photo ${lbIndex+1} of ${filtered.length} · Match: ${Math.round(r.confidence*100)}%`;
-  const dl = document.getElementById('lbDownload');
-  dl.href = r.url;
-  dl.setAttribute('download', r.filename || `graduation_${lbIndex+1}.jpg`);
+  const r = filtered[lbIndex];
+  if (!r) return;
+
+  const imgEl      = document.getElementById('lbImg');
+  const loadingEl  = document.getElementById('lbLoading');
+  const fallbackEl = document.getElementById('lbFallback');
+
+  // Show loading, hide others
+  loadingEl.style.display  = 'flex';
+  imgEl.style.display      = 'none';
+  fallbackEl.style.display = 'none';
+  imgEl.src = '';
+
+  // Build the best possible image URL:
+  // 1. Prefer thumbnail URL (thumbnail?id=...) — always works in <img>
+  // 2. If thumbnail missing, try extracting file ID and building thumbnail URL
+  // 3. Last resort: try the direct URL
+  let fileId = getFileId(r.thumbnail || '') || getFileId(r.url || '');
+  let imgSrc = fileId
+    ? `https://drive.google.com/thumbnail?id=${fileId}&sz=w1600`
+    : (r.thumbnail || r.url);
+
+  // Drive viewer URL for "Open in Drive" button
+  let viewerUrl = fileId
+    ? `https://drive.google.com/file/d/${fileId}/view`
+    : r.url;
+
+  // Download URL
+  let downloadUrl = fileId
+    ? `https://drive.google.com/uc?export=download&id=${fileId}`
+    : r.url;
+
+  imgEl.onload = () => {
+    loadingEl.style.display  = 'none';
+    fallbackEl.style.display = 'none';
+    imgEl.style.display      = 'block';
+  };
+  imgEl.onerror = () => {
+    // thumbnail failed — show fallback with drive link
+    loadingEl.style.display  = 'none';
+    imgEl.style.display      = 'none';
+    fallbackEl.style.display = 'flex';
+  };
+  imgEl.src = imgSrc;
+
+  document.getElementById('lbFilename').textContent = r.filename || `Photo ${lbIndex + 1}`;
+  document.getElementById('lbMeta').textContent =
+    `Photo ${lbIndex + 1} of ${filtered.length} · Match: ${Math.round(r.confidence * 100)}%`;
+
+  document.getElementById('lbOpenDrive').href = viewerUrl;
+  document.getElementById('lbDownload').href  = downloadUrl;
 }
 document.getElementById('lbClose').addEventListener('click', closeLB);
 document.getElementById('lbPrev').addEventListener('click', () => { lbIndex = (lbIndex - 1 + filtered.length) % filtered.length; updateLB(); });
